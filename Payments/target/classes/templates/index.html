@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payments</title>
+    <style>
+        /* Add CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <center><u><h1>Payments</h1></u></center>
+    <div class="filter">
+        <form th:action="@{/search}" method="get">
+            <label for="filterBy">Filter By:</label>
+            <select id="filterBy" name="filterBy">
+                <option value="all">All</option>
+                <option value="paymentId">Payment ID</option>
+                <option value="customerId">Customer ID</option>
+                <option value="paymentDate">Payment Date</option>
+            </select>
+
+            <!-- Payment ID Filter -->
+            <div id="paymentIdField" style="display: none;">
+                <label for="filterPaymentId">Payment ID:</label>
+                <input type="text" id="filterPaymentId" name="paymentId" />
+            </div>
+
+            <!-- Customer ID Filter -->
+            <div id="customerIdField" style="display: none;">
+                <label for="filterCustomerId">Customer ID:</label>
+                <input type="text" id="filterCustomerId" name="customerId" />
+            </div>
+
+            <!-- Payment Date Filter -->
+            <div id="paymentDateField" style="display: none;">
+                <label for="filterPaymentDate">Payment Date:</label>
+                <input type="text" id="filterPaymentDate" name="paymentDate" />
+            </div>
+
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <table>
+        <tr>
+            <th>Payment Id</th>
+            <th>CustomerID</th>
+            <th>ClaimID</th>
+            <th>HospitalID</th>
+            <th>Payment Amount</th>
+            <th>Payment Date</th>
+            <th>Action</th>
+        </tr>
+        <tr th:each="payment : ${payments}">
+            <td th:text="${payment.paymentID}"></td>
+            <td th:text="${payment.customerID}"></td>
+            <td th:text="${payment.claimID}"></td>
+            <td th:text="${payment.hospitalID}"></td>
+            <td th:text="${payment.paymentAmount}"></td>
+            <td th:text="${#dates.format(payment.paymentDate, 'yyyy-MM-dd')}"></td>
+            <td><a th:href="@{'/view/' + ${payment.paymentID}}">View</a></td>
+        </tr>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#filterBy').change(function () {
+                var selectedOption = $(this).val();
+                $('#paymentIdField').hide();
+                $('#customerIdField').hide();
+                $('#paymentDateField').hide();
+                if (selectedOption !== 'all') {
+                    $('#' + selectedOption + 'Field').show();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
